@@ -26,6 +26,14 @@ class RestfulModelCollection
     @model_class.new(@_api, *args)
   end
 
+  def as_json(options = {})
+    objects = []
+    for model in self.all
+      objects.push(model.as_json(options))
+    end
+    objects
+  end
+
   def inflate_collection(items = [])
     @_collection = []
     items.each do |json|

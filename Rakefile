@@ -17,9 +17,9 @@ Jeweler::Tasks.new do |gem|
   gem.name = "populr"
   gem.homepage = "http://github.com/bengotow/populr"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "bengotow@gmail.com"
+  gem.summary = %Q{Gem for interacting with the Populr.me API}
+  gem.description = %Q{Gem for interacting with the Populr.me API}
+  gem.email = "ben@populr.me"
   gem.authors = ["Ben Gotow"]
   # dependencies defined in Gemfile
 end

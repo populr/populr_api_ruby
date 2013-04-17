@@ -27,10 +27,20 @@ class RestfulModel
 
   def save!
     if _id
-      update('PUT', '', self.to_json(:api_representation => true))
+      update('PUT', '', self.as_json(:api_representation => true))
     else
-      update('POST', '', self.to_json(:api_representation => true))
+      update('POST', '', self.as_json(:api_representation => true))
     end
+  end
+
+  def as_json(options = {})
+    hash = {}
+    setters = methods.grep(/^\w+=$/)
+    setters.each do |setter|
+      getter = setter.to_s[0..setter.to_s.index('=')-1]
+      hash[getter] = self.send(getter)
+    end
+    hash
   end
 
   def update(http_method, action, data = {})

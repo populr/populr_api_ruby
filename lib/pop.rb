@@ -45,7 +45,7 @@ class Pop < RestfulModel
     @newly_populated_tags = {}
   end
 
-  def to_json(options = {})
+  def as_json(options = {})
     raise TemplateRequired.new unless template_id
 
     if options[:api_representation]

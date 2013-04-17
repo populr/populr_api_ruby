@@ -92,4 +92,28 @@ describe 'RestfulModelCollection' do
     end
   end
 
+  describe "#as_json" do
+    before (:each) do
+      result = double('result')
+      result.stub(:body).and_return("[{\"_id\":\"5107089add02dcaecc000003\",\"template_id\":\"5107089add02dcaecc000001\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}]")
+      result.stub(:code).and_return(200)
+      RestClient.should_receive(:get).and_yield(nil, nil, result)
+    end
+
+    it "should call as_json for each model in the collection" do
+      Pop.any_instance.should_receive(:as_json)
+      @collection.as_json
+    end
+
+    it "should return an array of hashes" do
+      @collection.as_json.count.should == 1
+      @collection.as_json.first['_id'].should == '5107089add02dcaecc000003'
+    end
+
+    it "should forward options to each model" do
+      Pop.any_instance.should_receive(:as_json).with(:bla => true)
+      @collection.as_json(:bla => true)
+    end
+  end
+
 end

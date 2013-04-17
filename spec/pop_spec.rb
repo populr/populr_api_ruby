@@ -31,7 +31,6 @@ describe 'Pop' do
     end
   end
 
-
   describe "#publish!" do
     before (:each) do
       @pop = Pop.new(@api)
