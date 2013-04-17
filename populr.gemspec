@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
     "lib/restful_model_collection.rb",
     "lib/template.rb",
     "lib/tracer.rb",
+    "populr.gemspec",
     "spec/pop_spec.rb",
     "spec/populr_spec.rb",
     "spec/restful_model_collection_spec.rb",
