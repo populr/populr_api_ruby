@@ -1,6 +1,6 @@
 = populr
 
-Description goes here.
+A rubygem for interacting with the Populr.me API from Ruby apps.
 
 == Contributing to populr
  
@@ -14,6 +14,6 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2013 Ben Gotow. See LICENSE.txt for
+Copyright (c) 2013 Project 10K. See LICENSE.md for
 further details.
 
