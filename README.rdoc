@@ -1,8 +1,8 @@
-= populr
+= Populr.me Ruby Gem
 
 A rubygem for interacting with the Populr.me API from Ruby apps.
 
-== Contributing to populr
+== Contributing to the Populr.me Ruby Gem
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it.
