@@ -19,6 +19,7 @@ class RestfulModelCollection
   end
 
   def find(id)
+    return nil unless id
     get_restful_model(id)
   end
 

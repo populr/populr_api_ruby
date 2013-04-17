@@ -8,6 +8,23 @@ describe 'Pop' do
     @api = Populr.new('key')
   end
 
+  describe "#initialize" do
+    it "should accept an API connection followed by a template" do
+      template = Template.new(@api)
+      template._id = '123'
+      pop = Pop.new(@api, template)
+      pop.template_id.should == '123'
+    end
+
+    it "should accept just a template" do
+      template = Template.new(@api)
+      template._id = '123'
+      pop = Pop.new(template)
+      pop.template_id.should == '123'
+    end
+
+  end
+
   describe "#inflate" do
     it "should inflate tracers into embedded tracer objects" do
       pop = Pop.new(@api)

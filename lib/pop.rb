@@ -25,7 +25,7 @@ class Pop < RestfulModel
 
     if template.is_a?(Template)
       self.template_id = template._id
-      @_api = template._api
+      @_api = template.instance_variable_get :@_api
     else
       @_api = api_or_template
     end
