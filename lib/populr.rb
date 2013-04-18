@@ -45,8 +45,8 @@ class Populr
 
 
 
-  def initialize(api_key)
-    @api_server = "api.lvh.me:3000"
+  def initialize(api_key, api_server = 'api.populr.me')
+    @api_server = api_server
     @api_key = api_key
   end
 
