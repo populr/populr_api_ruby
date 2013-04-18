@@ -23,6 +23,7 @@ class Populr
 
   attr_accessor :api_server
   attr_reader :api_key
+  attr_reader :api_version
 
 
   def self.interpret_response(result, options = {})
@@ -47,6 +48,7 @@ class Populr
 
   def initialize(api_key, api_server = 'api.populr.me')
     @api_server = api_server
+    @api_version = 'v0'
     @api_key = api_key
   end
 
@@ -71,7 +73,7 @@ class Populr
   end
 
   def url_for_path(path)
-    "http://#{@api_key}:@#{api_server}#{path}"
+    "http://#{@api_key}:@#{@api_server}/#{@api_version}#{path}"
   end
 
 
