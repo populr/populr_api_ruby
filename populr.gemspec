@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "populr"
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Gotow"]
   s.date = "2013-04-18"
-  s.description = "Gem for interacting with the Populr.me API"
+  s.description = "Gem for interacting with the Populr.me API that allows you to create and publish one-page websites, subscribe to web hooks and receive events when those pages are interacted with. Visit http://www.populr.me/ for more information. "
   s.email = "ben@populr.me"
   s.extra_rdoc_files = [
     "LICENSE.md",
@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
     "spec/spec_helper.rb",
     "spec/tracer_spec.rb"
   ]
-  s.homepage = "http://github.com/bengotow/populr"
+  s.homepage = "http://github.com/populr/populr_api_ruby"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.10"
