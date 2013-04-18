@@ -21,7 +21,9 @@ describe 'RestfulModelCollection' do
       context "when the server responds correctly" do
         before (:each) do
           result = double('result')
-          result.stub(:body).and_return("[{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}]")
+          result.stub(:body).and_return("[{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}]",
+                                        "[{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}]",
+                                        "[]")
           result.stub(:code).and_return(200)
           RestClient.should_receive(:get).and_yield(nil, nil, result)
         end
@@ -75,6 +77,20 @@ describe 'RestfulModelCollection' do
         pop.is_a?(Pop).should == true
         pop._id.should == '5107089add02dcaecc000003'
       end
+    end
+  end
+
+  describe "#delete" do
+    it "should accept a model to delete" do
+      RestClient.should_receive(:delete).with(@populr.images.path('123'))
+      a = ImageAsset.new(@api)
+      a._id = '123'
+      @populr.images.delete(a)
+    end
+
+    it "should accept a string ID to delete" do
+      RestClient.should_receive(:delete).with(@populr.images.path('123'))
+      @populr.images.delete('123')
     end
   end
 

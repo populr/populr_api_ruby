@@ -51,6 +51,10 @@ class Populr
     @api_server = api_server
     @api_version = 'v0'
     @api_key = api_key
+
+    RestClient.add_before_execution_proc do |req, params|
+      req.add_field('X-Populr-API-Wrapper', 'ruby')
+    end
   end
 
   def templates

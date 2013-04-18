@@ -5,17 +5,39 @@ class RestfulModelCollection
   def initialize(model_class, api, parent = nil)
     @model_class = model_class
     @_parent = parent
-    @_collection = nil
     @_api = api
   end
 
-  def all
-    return @_collection if @_collection
-    get_restful_model_collection
+  def each
+    offset = 0
+    finished = false
+    while (!finished) do
+      items = get_restful_model_collection(offset)
+      break if items.length == 0
+      items.each { |item|
+        yield item
+      }
+      offset += items.length
+    end
   end
 
   def first
-    all.first
+    get_restful_model_collection.first
+  end
+
+  def all
+    finished = false
+    items = []
+    while (!finished) do
+      items = items.concat(get_restful_model_collection(items.length))
+    end
+    items
+  end
+
+  def delete(item_or_id)
+    item_or_id = item_or_id._id if item_or_id.is_a?(RestfulModel)
+    url = @_api.url_for_path(self.path(item_or_id))
+    RestClient.delete(url)
   end
 
   def find(id)
@@ -36,7 +58,7 @@ class RestfulModelCollection
   end
 
   def inflate_collection(items = [])
-    @_collection = []
+    models = []
 
     return unless items.is_a?(Array)
     items.each do |json|
@@ -47,9 +69,9 @@ class RestfulModelCollection
       else
         model = @model_class.new(json)
       end
-      @_collection.push(model)
+      models.push(model)
     end
-    @_collection
+    models
   end
 
   def path(id = "")
@@ -76,14 +98,15 @@ class RestfulModelCollection
     model
   end
 
-  def get_restful_model_collection
-    url = @_api.url_for_path(self.path)
+  def get_restful_model_collection(offset = 0, count = 50)
+    url = @_api.url_for_path("#{self.path}?offset=#{offset}&count=#{count}")
+    models = []
 
     RestClient.get(url){ |response,request,result|
       items = Populr.interpret_response(result, {:expected_class => Array})
-      inflate_collection(items)
+      models = inflate_collection(items)
     }
-    @_collection
+    models
   end
 
 end
