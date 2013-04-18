@@ -46,7 +46,8 @@ class Populr
 
 
 
-  def initialize(api_key, api_server = 'api.populr.me')
+  def initialize(api_key, api_server = 'https://api.populr.me')
+    raise "When overriding the Populr API server address, you must include https://" unless api_server.include?('://')
     @api_server = api_server
     @api_version = 'v0'
     @api_key = api_key
@@ -73,7 +74,8 @@ class Populr
   end
 
   def url_for_path(path)
-    "http://#{@api_key}:@#{@api_server}/#{@api_version}#{path}"
+    protocol, domain = @api_server.split('//')
+    "#{protocol}//#{@api_key}:@#{domain}/#{@api_version}#{path}"
   end
 
 
