@@ -25,7 +25,7 @@ describe 'Populr' do
 
   describe "#url_for_path" do
     it "should return the url for a provided path" do
-      @populr.url_for_path('/wobble').should == "http://#{@populr.api_key}:@#{@populr.api_server}/wobble"
+      @populr.url_for_path('/wobble').should == "https://#{@populr.api_key}:@api.populr.me/v0/wobble"
     end
   end
 
