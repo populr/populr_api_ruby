@@ -37,6 +37,8 @@ class RestfulModelCollection
 
   def inflate_collection(items = [])
     @_collection = []
+
+    return unless items.is_a?(Array)
     items.each do |json|
       if @model_class < RestfulModel
         model = @model_class.new(self)
@@ -64,7 +66,8 @@ class RestfulModelCollection
     RestClient.get(url){ |response,request,result|
       json = Populr.interpret_response(result, {:expected_class => Object})
       if @model_class < RestfulModel
-        model = @model_class.new(self)
+        model = @model_class.new(@_api)
+        model.instance_variable_set(:@_parent, @_parent)
         model.inflate(json)
       else
         model = @model_class.new(json)

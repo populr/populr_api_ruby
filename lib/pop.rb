@@ -4,6 +4,7 @@ require 'tracer'
 class Pop < RestfulModel
 
   class TemplateRequired < StandardError; end
+  class AssetMustBeSaved < StandardError; end
 
   attr_accessor :template_id
   attr_accessor :name
@@ -25,6 +26,9 @@ class Pop < RestfulModel
 
     if template.is_a?(Template)
       self.template_id = template._id
+      self.unpopulated_api_regions = template.api_regions
+      self.unpopulated_api_tags = template.api_tags
+
       @_api = template.instance_variable_get :@_api
     else
       @_api = api_or_template
@@ -76,7 +80,10 @@ class Pop < RestfulModel
     assets = [assets] unless assets.is_a?(Array)
 
     @newly_populated_regions[region_identifier] ||= []
-    @newly_populated_regions[region_identifier].concat(assets.map {|a| a._id })
+    @newly_populated_regions[region_identifier].concat(assets.map {|a|
+      raise AssetMustBeSaved.new unless a._id
+      a._id
+    })
     self.unpopulated_api_regions.delete(region_identifier)
   end
 

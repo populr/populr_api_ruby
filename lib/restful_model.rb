@@ -39,6 +39,10 @@ class RestfulModel
     setters.each do |setter|
       getter = setter.to_s[0..setter.to_s.index('=')-1]
       hash[getter] = self.send(getter)
+
+      if hash[getter].class.method_defined? :as_json
+        hash[getter] = hash[getter].as_json(options)
+      end
     end
     hash
   end

@@ -13,6 +13,13 @@ class Populr
   class AccessDenied < StandardError; end
   class ResourceNotFound < StandardError; end
   class UnexpectedResponse < StandardError; end
+  class APIError < StandardError
+    attr_accessor :error_type
+    def initialize(type, error)
+      super(error)
+      self.error_type = type
+    end
+  end
 
   attr_accessor :api_server
   attr_reader :api_key
@@ -22,11 +29,12 @@ class Populr
     # Handle HTTP errors and RestClient errors
     raise ResourceNotFound.new if result.code.to_i == 404
     raise AccessDenied.new if result.code.to_i == 403
-    raise UnexpectedResponse.new(result.msg) if result.is_a?(Net::HTTPClientError)
 
     # Hande content expectation errors
     raise UnexpectedResponse.new if options[:expected_class] && result.body.empty?
     json = JSON.parse(result.body)
+    raise APIError.new(json['error_type'], json['error']) if json.is_a?(Hash) && json['error_type']
+    raise UnexpectedResponse.new(result.msg) if result.is_a?(Net::HTTPClientError)
     raise UnexpectedResponse.new if options[:expected_class] && !json.is_a?(options[:expected_class])
     json
 

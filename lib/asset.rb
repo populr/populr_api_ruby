@@ -12,10 +12,9 @@ class Asset < RestfulModel
     @file = file
     self.title = title
     self.description = description
-    self.link = link
   end
 
-  def to_json(options = {})
+  def as_json(options = {})
     hash = super(options)
     hash[:file] = @file if options[:api_representation] && @file
     hash
