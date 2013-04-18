@@ -15,10 +15,10 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "populr"
-  gem.homepage = "http://github.com/bengotow/populr"
+  gem.homepage = "http://github.com/populr/populr_api_ruby"
   gem.license = "MIT"
   gem.summary = %Q{Gem for interacting with the Populr.me API}
-  gem.description = %Q{Gem for interacting with the Populr.me API}
+  gem.description = %Q{Gem for interacting with the Populr.me API that allows you to create and publish one-page websites, subscribe to web hooks and receive events when those pages are interacted with. Visit http://www.populr.me/ for more information. }
   gem.email = "ben@populr.me"
   gem.authors = ["Ben Gotow"]
   # dependencies defined in Gemfile
