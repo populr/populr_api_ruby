@@ -7,4 +7,8 @@ class Template < RestfulModel
   attr_accessor :api_tags
   attr_accessor :api_regions
 
+  def pops
+    @pops ||= RestfulModelCollection.new(Pop, @_api, self)
+  end
+
 end

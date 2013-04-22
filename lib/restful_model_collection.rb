@@ -26,10 +26,14 @@ class RestfulModelCollection
   end
 
   def all
-    finished = false
+    range(0, Float::INFINITY)
+  end
+
+  def range(offset = 0, count = 50)
     items = []
-    while (!finished) do
-      items = items.concat(get_restful_model_collection(items.length))
+    finished = false
+    while (!finished && items.length < count) do
+      items = items.concat(get_restful_model_collection(offset + items.length))
     end
     items
   end
