@@ -23,22 +23,24 @@ class Pop < RestfulModel
 
   def initialize(parent)
     if parent.is_a?(Template)
-      @_parent = parent.pops
       @_api = parent.instance_variable_get :@_api
       self.template_id = parent._id
       self.unpopulated_api_regions = parent.api_regions
       self.unpopulated_api_tags = parent.api_tags
 
     elsif parent.is_a?(RestfulModelCollection)
-      @_parent = parent
       @_api = parent.instance_variable_get :@_api
 
     elsif parent.is_a?(Populr)
-      @_parent = parent.pops
       @_api = parent
     else
       raise "You must create a pop with a template, collection, or API model."
     end
+
+    # We could choose to make parent the restfulModelCollection that is passed to us,
+    # but that would result in PUTs and POSTs to /templates/:id/pops, which isn't
+    # how the API is currently set up. For now, all pop PUTS, POSTs, etc... go to /pops/
+    @_parent = @_api.pops
 
     @newly_populated_regions = {}
     @newly_populated_tags = {}
@@ -77,6 +79,11 @@ class Pop < RestfulModel
 
   def has_unpopulated_region(region_identifier)
     self.unpopulated_api_regions.include?(region_identifier)
+  end
+
+  def type_of_unpopulated_region(region_identifier)
+    return false unless self.has_unpopulated_region(region_identifier)
+    self.unpopulated_api_regions[region_identifier]['type']
   end
 
   def populate_region(region_identifier, assets)

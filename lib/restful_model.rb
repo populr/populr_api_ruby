@@ -27,7 +27,7 @@ class RestfulModel
       property_name = setter.to_s[0..setter.to_s.index('=')-1]
       self.send(setter, json[property_name]) if json.has_key?(property_name)
     end
-    self.created_at = Time.new(self.created_at) if self.created_at
+    self.created_at = Time.parse(self.created_at) if self.created_at
   end
 
   def save!

@@ -10,7 +10,7 @@ class EmbedAsset < Asset
 
   # as an alternative to calling Asset.new, you can call populr.images.build
   def initialize(parent, source_html, title = nil, description = nil)
-    super(parent)
+    super(parent, nil)
 
     @source_html = source_html
     self.title = title
