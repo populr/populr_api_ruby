@@ -30,12 +30,20 @@ class RestfulModelCollection
   end
 
   def range(offset = 0, count = 50)
-    items = []
+    accumulated = []
     finished = false
-    while (!finished && items.length < count) do
-      items = items.concat(get_restful_model_collection(offset + items.length))
+    chunk_size = 50
+
+    while (!finished && accumulated.length < count) do
+      results = get_restful_model_collection(offset + accumulated.length, chunk_size)
+      accumulated = accumulated.concat(results)
+
+      # we're done if we have more than 'count' items, or if we asked for 50 and got less than 50...
+      finished = accumulated.length >= count || results.length == 0 || (results.length % chunk_size != 0)
     end
-    items
+
+    accumulated = accumulated[0..count] if count < Float::INFINITY
+    accumulated
   end
 
   def delete(item_or_id)
@@ -50,15 +58,7 @@ class RestfulModelCollection
   end
 
   def build(*args)
-    @model_class.new(@_api, *args)
-  end
-
-  def as_json(options = {})
-    objects = []
-    for model in self.all
-      objects.push(model.as_json(options))
-    end
-    objects
+    @model_class.new(self, *args)
   end
 
   def inflate_collection(items = [])
@@ -68,7 +68,6 @@ class RestfulModelCollection
     items.each do |json|
       if @model_class < RestfulModel
         model = @model_class.new(self)
-        model.instance_variable_set(:@_parent, @_parent)
         model.inflate(json)
       else
         model = @model_class.new(json)
@@ -92,8 +91,7 @@ class RestfulModelCollection
     RestClient.get(url){ |response,request,result|
       json = Populr.interpret_response(result, {:expected_class => Object})
       if @model_class < RestfulModel
-        model = @model_class.new(@_api)
-        model.instance_variable_set(:@_parent, @_parent)
+        model = @model_class.new(self)
         model.inflate(json)
       else
         model = @model_class.new(json)

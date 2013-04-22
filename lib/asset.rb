@@ -6,8 +6,8 @@ class Asset < RestfulModel
   attr_accessor :title
 
   # as an alternative to calling Asset.new, you can call populr.images.build
-  def initialize(api, file, title = nil, description = nil)
-    super(api)
+  def initialize(parent, file, title = nil, description = nil)
+    super(parent)
 
     @file = file
     self.title = title

@@ -21,17 +21,23 @@ class Pop < RestfulModel
   attr_reader :newly_populated_regions
   attr_reader :newly_populated_tags
 
-  def initialize(api_or_template, template = nil)
-    template = template || api_or_template
+  def initialize(parent)
+    if parent.is_a?(Template)
+      @_parent = parent.pops
+      @_api = parent.instance_variable_get :@_api
+      self.template_id = parent._id
+      self.unpopulated_api_regions = parent.api_regions
+      self.unpopulated_api_tags = parent.api_tags
 
-    if template.is_a?(Template)
-      self.template_id = template._id
-      self.unpopulated_api_regions = template.api_regions
-      self.unpopulated_api_tags = template.api_tags
+    elsif parent.is_a?(RestfulModelCollection)
+      @_parent = parent
+      @_api = parent.instance_variable_get :@_api
 
-      @_api = template.instance_variable_get :@_api
+    elsif parent.is_a?(Populr)
+      @_parent = parent.pops
+      @_api = parent
     else
-      @_api = api_or_template
+      raise "You must create a pop with a template, collection, or API model."
     end
 
     @newly_populated_regions = {}
@@ -41,16 +47,13 @@ class Pop < RestfulModel
   def inflate(json)
     super(json)
 
-    collection = RestfulModelCollection.new(Tracer, @_api, self)
-    collection.inflate_collection(self.tracers) if self.tracers
-    self.tracers = collection
-
+    self.tracers = RestfulModelCollection.new(Tracer, @_api, self)
     @newly_populated_regions = {}
     @newly_populated_tags = {}
   end
 
   def as_json(options = {})
-    raise TemplateRequired.new unless template_id
+    raise TemplateRequired.new if options[:api_representation] && !template_id
 
     if options[:api_representation]
       hash = {}

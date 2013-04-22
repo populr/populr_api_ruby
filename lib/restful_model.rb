@@ -8,8 +8,13 @@ class RestfulModel
   end
 
 
-  def initialize(api)
-    @_api = api
+  def initialize(parent)
+    if parent.is_a?(Populr)
+      @_api = parent
+    else
+      @_parent = parent
+      @_api = parent.instance_variable_get :@_api
+    end
   end
 
   def ==(comparison_object)
@@ -61,7 +66,7 @@ class RestfulModel
   def path(action = "")
     action = "/#{action}" unless action.empty?
     prefix = @_parent ? @_parent.path : ''
-    "#{prefix}/#{self.class.collection_name}/#{_id}#{action}"
+    "#{prefix}#{_id}#{action}"
   end
 
 

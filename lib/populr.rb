@@ -58,23 +58,33 @@ class Populr
   end
 
   def templates
-    RestfulModelCollection.new(Template, self)
+    @templates ||= RestfulModelCollection.new(Template, self)
+    @templates
   end
 
   def pops
-    RestfulModelCollection.new(Pop, self)
+    @pops ||= RestfulModelCollection.new(Pop, self)
+    @pops
   end
 
   def domains
-    RestfulModelCollection.new(Domain, self)
+    @domains ||= RestfulModelCollection.new(Domain, self)
+    @domains
   end
 
   def documents
-    RestfulModelCollection.new(DocumentAsset, self)
+    @documents ||= RestfulModelCollection.new(DocumentAsset, self)
+    @documents
   end
 
   def images
-    RestfulModelCollection.new(ImageAsset, self)
+    @images ||= RestfulModelCollection.new(ImageAsset, self)
+    @images
+  end
+
+  def embeds
+    @embeds ||= RestfulModelCollection.new(EmbedAsset, self)
+    @embeds
   end
 
   def url_for_path(path)

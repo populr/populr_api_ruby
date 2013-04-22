@@ -12,29 +12,22 @@ describe 'Pop' do
     it "should accept an API connection followed by a template" do
       template = Template.new(@api)
       template._id = '123'
-      pop = Pop.new(@api, template)
-      pop.template_id.should == '123'
-    end
-
-    it "should accept just a template" do
-      template = Template.new(@api)
-      template._id = '123'
       pop = Pop.new(template)
       pop.template_id.should == '123'
+      pop.instance_variable_get('@_api').should == @api
+    end
+
+    it "should accept a RestfulModelCollection as a parent" do
+      pop = Pop.new(@api.pops)
+      pop.template_id.should == nil
+      pop.instance_variable_get('@_api').should == @api
     end
 
   end
 
   describe "#inflate" do
-    it "should inflate tracers into embedded tracer objects" do
-      pop = Pop.new(@api)
-      pop.inflate(JSON.parse("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}"))
-      pop.tracers.first.is_a?(Tracer).should == true
-      pop.tracers.first.name.should == 'Facebook'
-    end
-
-    it "should set the tracer collection's _parent so the tracer's path returns the full nested path" do
-      pop = Pop.new(@api)
+    it "should create a tracer collection whose _parent is set so the tracer's path returns the full nested path" do
+      pop = Pop.new(@api.pops)
       pop.inflate(JSON.parse("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}"))
       pop.tracers.path.should == "/pops/#{pop._id}/tracers/"
     end
