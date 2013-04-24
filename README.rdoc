@@ -1,6 +1,120 @@
 = Populr.me Ruby Gem
 
-A rubygem for interacting with the Populr.me API from Ruby apps.
+A rubygem for interacting with the Populr.me API from Ruby apps. If you're just getting started, be sure to check out the sample app at http://github.com/populr/populr_api_ruby_sample
+
+=== Getting an API Key
+
+Read the 'Getting Started' section of the API documentation, which explains how to get an API key and create API templates on the Populr.me website:
+http://developers.populr.me/api
+
+
+=== Retrieving and Listing Pops and Templates
+
+    # Create an API Connection
+    require 'populr'
+    @populr = Populr.new(<Your API Key>)
+
+    # List the templates in your populr account
+    @populr.templates.each do |template|
+      puts template.id
+    end
+
+    # Fetch a specific template
+    @template = @populr.templates.first
+    @template = @populr.templates.find(params[:template_id])
+
+    # List the pops that have already been created with a template
+    @template.pops.each do |pop|
+      puts pop.id
+    end
+
+    # List pops 100-150
+    @template.pops.range(100,50).each do |pop|
+      puts pop.id
+    end
+
+
+=== Creating & Publishing a Pop
+
+    # You must always create a pop from an existing template created
+    # on Populr.me
+    template = @populr.templates.find(<Template ID>)
+    pop = Pop.new(template)
+
+    # Assign it's title, slug, and other properties
+    p.slug = params[:pop_data]['slug']
+
+    # Fill in {{tags}} in the body of the pop using the
+    # values the user has provided in the pop_data parameter
+    for tag,value in params[:pop_data]['tags']
+      p.populate_tag(tag, value)
+    end
+
+    # Optionally set a password that will be required to view
+    p.password = 'pass'
+
+    # Save the pop. This commits our changes above.
+    p.save!
+
+    # Publish the pop. This makes it available at http://p.domain/p.slug.
+    # The pop model is updated with a valid published_pop_url after this line!
+    p.publish!
+
+
+=== Creating Assets
+
+    # Create a new image asset and fill the region named
+    # 'profile-image-region' with it.
+    file = File.open('my-image.jpg', 'r')
+    asset = @populr.images.build(file, 'Image Name').save!
+    p.populate_region('profile-image-region', asset)
+
+    # Fill in an embed regions by creating a new embed asset with HTML
+    html = "My HTML"
+    asset = @populr.embeds.build(html).save!
+    p.populate_region('youtube-region', asset)
+
+
+=== Creating Tracers
+
+    # Create a new tracer for our pop. This will allow us to collect
+    # analytics when users visit the page with the tracer code added.
+    tracer = pop.tracers.build
+    tracer.name = 'bengotow@gmail.com'
+    tracer.enable_webhook('http://mysite.com/tracer_viewed/%{pop-id}')
+    tracer.save!
+
+    # The URL (with the ?tc tracer extension) to give to the user.
+    traced_url = #{pop.published_pop_url}?#{tracer.code}
+
+
+=== Retrieving Tracer Analytics
+
+    pop = @populr.pops.find('<Pop ID>')
+    tracer = pop.tracers.find('<Tracer ID>')
+ 
+    # Fetch the number of views
+    puts tracer.views
+
+    # Fetch the number of clicks for a particular asset we placed in a region
+    puts tracer.clicks_for_asset('<Asset ID>')
+
+    # Fetch the number of clicks within an entire region (for example, clicks on 
+    # a set of documents that were all placed in the same region.)
+    puts tracer.clicks_for_region('profile-image-region')
+
+
+== Best Practices & Tips
+
+* Create template pops using the Populr.me website that have everything _except_ what you need to insert via the API.
+* Show a list of available templates to users, or store template IDs on your server or hardcode them into your app. 
+  You cannot perform 'where' queries using the Populr API, so you can't retrieve pops or template by name or labels.
+* Avoid creating the same asset each time you create a pop. If you plan to put the same image, document or embed in 
+  multiple pops, create the assets ahead of time and insert them into each pop.
+* Consider using the tracer name property to store extra information, such as a user ID or email address.
+* Do not create hundreds of pops in a hard loop. If you make an exessive number of requests in a small period of time, 
+  your API access may be suspended. Use Resque or a rake task to push pop creation to the background.
+
 
 == Contributing to the Populr.me Ruby Gem
  
