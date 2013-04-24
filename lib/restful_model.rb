@@ -8,8 +8,13 @@ class RestfulModel
   end
 
 
-  def initialize(api)
-    @_api = api
+  def initialize(parent)
+    if parent.is_a?(Populr)
+      @_api = parent
+    else
+      @_parent = parent
+      @_api = parent.instance_variable_get :@_api
+    end
   end
 
   def ==(comparison_object)
@@ -22,7 +27,7 @@ class RestfulModel
       property_name = setter.to_s[0..setter.to_s.index('=')-1]
       self.send(setter, json[property_name]) if json.has_key?(property_name)
     end
-    self.created_at = Time.new(self.created_at) if self.created_at
+    self.created_at = Time.parse(self.created_at) if self.created_at
   end
 
   def save!
@@ -61,7 +66,7 @@ class RestfulModel
   def path(action = "")
     action = "/#{action}" unless action.empty?
     prefix = @_parent ? @_parent.path : ''
-    "#{prefix}/#{self.class.collection_name}/#{_id}#{action}"
+    "#{prefix}#{_id}#{action}"
   end
 
 

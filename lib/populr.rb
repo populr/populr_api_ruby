@@ -3,6 +3,7 @@ require 'restful_model_collection'
 require 'template'
 require 'document_asset'
 require 'image_asset'
+require 'embed_asset'
 require 'json'
 require 'pop'
 require 'domain'
@@ -51,26 +52,40 @@ class Populr
     @api_server = api_server
     @api_version = 'v0'
     @api_key = api_key
+
+    RestClient.add_before_execution_proc do |req, params|
+      req.add_field('X-Populr-API-Wrapper', 'ruby')
+    end
   end
 
   def templates
-    RestfulModelCollection.new(Template, self)
+    @templates ||= RestfulModelCollection.new(Template, self)
+    @templates
   end
 
   def pops
-    RestfulModelCollection.new(Pop, self)
+    @pops ||= RestfulModelCollection.new(Pop, self)
+    @pops
   end
 
   def domains
-    RestfulModelCollection.new(Domain, self)
+    @domains ||= RestfulModelCollection.new(Domain, self)
+    @domains
   end
 
   def documents
-    RestfulModelCollection.new(DocumentAsset, self)
+    @documents ||= RestfulModelCollection.new(DocumentAsset, self)
+    @documents
   end
 
   def images
-    RestfulModelCollection.new(ImageAsset, self)
+    @images ||= RestfulModelCollection.new(ImageAsset, self)
+    @images
+  end
+
+  def embeds
+    @embeds ||= RestfulModelCollection.new(EmbedAsset, self)
+    @embeds
   end
 
   def url_for_path(path)
