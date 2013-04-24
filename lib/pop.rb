@@ -25,6 +25,8 @@ class Pop < RestfulModel
     if parent.is_a?(Template)
       @_api = parent.instance_variable_get :@_api
       self.template_id = parent._id
+      self.title = parent.title
+      self.name = parent.name
       self.unpopulated_api_regions = parent.api_regions
       self.unpopulated_api_tags = parent.api_tags
 
@@ -48,7 +50,6 @@ class Pop < RestfulModel
 
   def inflate(json)
     super(json)
-
     self.tracers = RestfulModelCollection.new(Tracer, @_api, self)
     @newly_populated_regions = {}
     @newly_populated_tags = {}
