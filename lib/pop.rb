@@ -38,7 +38,7 @@ class Pop < RestfulModel
       self.unpopulated_api_regions = parent.api_regions.dup
       self.unpopulated_api_tags = parent.api_tags.dup
       self.custom_code = parent.custom_code
-      self.custom_links = parent.custom_links.dup
+      self.custom_links = parent.custom_links.dup if parent.custom_links
 
     elsif parent.is_a?(RestfulModelCollection)
       @_api = parent.instance_variable_get :@_api
