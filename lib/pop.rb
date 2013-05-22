@@ -15,6 +15,14 @@ class Pop < RestfulModel
   attr_accessor :published_pop_url
   attr_accessor :unpopulated_api_regions
   attr_accessor :unpopulated_api_tags
+  attr_accessor :custom_links
+  attr_accessor :custom_code
+  attr_accessor :clone_link_enabled
+  attr_accessor :clone_link_url
+  attr_accessor :collaboration_link_enabled
+  attr_accessor :collaboration_interstitial_text
+  attr_accessor :collaboration_link_url
+  attr_accessor :collaboration_webhook
   attr_accessor :domain
   attr_accessor :password
 
@@ -27,8 +35,10 @@ class Pop < RestfulModel
       self.template_id = parent._id
       self.title = parent.title
       self.name = parent.name
-      self.unpopulated_api_regions = parent.api_regions
-      self.unpopulated_api_tags = parent.api_tags
+      self.unpopulated_api_regions = parent.api_regions.dup
+      self.unpopulated_api_tags = parent.api_tags.dup
+      self.custom_code = parent.custom_code
+      self.custom_links = parent.custom_links.dup
 
     elsif parent.is_a?(RestfulModelCollection)
       @_api = parent.instance_variable_get :@_api
@@ -76,6 +86,28 @@ class Pop < RestfulModel
 
   def unpublish!
     update('POST', 'unpublish')
+  end
+
+  def enable_collaboration!(interstitial_text = '', webhook = nil)
+    self.collaboration_link_enabled = true
+    self.collaboration_webhook = webhook
+    self.collaboration_interstitial_text = interstitial_text
+    self.save! # go and populate our model with the collaboration link
+  end
+
+  def disable_collaboration
+    self.collaboration_link_enabled = false
+    self.collaboration_link_url = nil
+  end
+
+  def enable_cloning!
+    self.clone_link_enabled = true
+    self.save! # go and populate our model with the clone link
+  end
+
+  def disable_cloning
+    self.clone_link_enabled = false
+    self.clone_link_url = nil # doesn't get saed, just for developer interface
   end
 
   def has_unpopulated_region(region_identifier)
