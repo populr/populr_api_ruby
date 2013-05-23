@@ -89,7 +89,7 @@ class RestfulModelCollection
     url = @_api.url_for_path(self.path(id))
 
     RestClient.get(url){ |response,request,result|
-      json = Populr.interpret_response(result, {:expected_class => Object})
+      json = Populr.interpret_response(result, response, {:expected_class => Object})
       if @model_class < RestfulModel
         model = @model_class.new(self)
         model.inflate(json)
@@ -103,9 +103,8 @@ class RestfulModelCollection
   def get_restful_model_collection(offset = 0, count = 50)
     url = @_api.url_for_path("#{self.path}?offset=#{offset}&count=#{count}")
     models = []
-
     RestClient.get(url){ |response,request,result|
-      items = Populr.interpret_response(result, {:expected_class => Array})
+      items = Populr.interpret_response(result, response, {:expected_class => Array})
       models = inflate_collection(items)
     }
     models

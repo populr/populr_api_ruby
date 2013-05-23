@@ -61,7 +61,7 @@ class RestfulModel
     action_url = @_api.url_for_path(self.path(action))
 
     RestClient.send(http_method, action_url, data){ |response,request,result|
-      json = Populr.interpret_response(result, {:expected_class => Object})
+      json = Populr.interpret_response(result, response, {:expected_class => Object})
       inflate(json)
     }
     self

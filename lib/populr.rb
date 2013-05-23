@@ -27,14 +27,14 @@ class Populr
   attr_reader :api_version
 
 
-  def self.interpret_response(result, options = {})
+  def self.interpret_response(result, result_content, options = {})
     # Handle HTTP errors and RestClient errors
     raise ResourceNotFound.new if result.code.to_i == 404
     raise AccessDenied.new if result.code.to_i == 403
 
     # Hande content expectation errors
-    raise UnexpectedResponse.new if options[:expected_class] && result.body.empty?
-    json = JSON.parse(result.body)
+    raise UnexpectedResponse.new if options[:expected_class] && result_content.empty?
+    json = JSON.parse(result_content)
     raise APIError.new(json['error_type'], json['error']) if json.is_a?(Hash) && json['error_type']
     raise UnexpectedResponse.new(result.msg) if result.is_a?(Net::HTTPClientError)
     raise UnexpectedResponse.new if options[:expected_class] && !json.is_a?(options[:expected_class])
