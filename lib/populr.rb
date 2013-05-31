@@ -83,6 +83,11 @@ class Populr
     @images
   end
 
+  def background_images
+    @background_images ||= RestfulModelCollection.new(BackgroundImageAsset, self)
+    @background_images
+  end
+
   def embeds
     @embeds ||= RestfulModelCollection.new(EmbedAsset, self)
     @embeds

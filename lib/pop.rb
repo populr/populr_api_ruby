@@ -23,6 +23,7 @@ class Pop < RestfulModel
   attr_accessor :collaboration_interstitial_text
   attr_accessor :collaboration_link_url
   attr_accessor :collaboration_webhook
+  attr_accessor :background_image_asset_id
   attr_accessor :domain
   attr_accessor :password
 
@@ -35,6 +36,10 @@ class Pop < RestfulModel
       self.template_id = parent._id
       self.title = parent.title
       self.name = parent.name
+      self.domain = parent.domain
+      self.password = parent.password
+      self.label_names = parent.label_names.dup if parent.label_names
+      self.background_image_asset_id = parent.background_image_asset_id
       self.unpopulated_api_regions = parent.api_regions.dup
       self.unpopulated_api_tags = parent.api_tags.dup
       self.custom_code = parent.custom_code
