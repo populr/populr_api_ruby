@@ -88,6 +88,10 @@ class Pop < RestfulModel
     update('POST', 'unpublish')
   end
 
+  def edit_url
+    return @_api.api_server.gsub('api.', 'www.') + "/edit/#{self._id}"
+  end
+
   def enable_collaboration!(interstitial_text = '', webhook = nil)
     self.collaboration_link_enabled = true
     self.collaboration_webhook = webhook
