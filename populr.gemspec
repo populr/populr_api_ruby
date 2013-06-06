@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "populr"
-  s.version = "0.1.8"
+  s.version = "0.1.9"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ben Gotow"]
-  s.date = "2013-05-23"
+  s.date = "2013-06-06"
   s.description = "Gem for interacting with the Populr.me API that allows you to create and publish one-page websites, subscribe to web hooks and receive events when those pages are interacted with. Visit http://www.populr.me/ for more information. "
   s.email = "ben@populr.me"
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "lib/asset.rb",
+    "lib/background_image_asset.rb",
     "lib/document_asset.rb",
     "lib/domain.rb",
     "lib/embed_asset.rb",
