@@ -148,5 +148,14 @@ class Pop < RestfulModel
     self.unpopulated_api_tags.delete(tag_identifier)
   end
 
+  def analytics
+    analytics = nil
+    action_url = @_api.url_for_path(self.path('analytics'))
+    RestClient.send('get', action_url){ |response,request,result|
+      analytics = Populr.interpret_response(result, response, {:expected_class => Object})
+    }
+    analytics
+  end
+
 
 end
