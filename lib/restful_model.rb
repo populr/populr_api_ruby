@@ -42,14 +42,12 @@ class RestfulModel
     hash = {}
     setters = methods.grep(/^\w+=$/)
     setters.each do |setter|
-      getter = setter.to_s[0..setter.to_s.index('=')-1]
+      getter = setter.to_s.sub('=')
       unless options[:except] && options[:except].include?(getter)
         value = self.send(getter)
         unless value.is_a? RestfulModelCollection
+          value = value.as_json(options) if value.respond_to?(:as_json)
           hash[getter] = value
-          if value.class.method_defined? :as_json
-            value = value.as_json(options)
-          end
         end
       end
     end
