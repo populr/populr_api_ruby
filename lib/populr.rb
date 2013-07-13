@@ -32,7 +32,7 @@ class Populr
     raise ResourceNotFound.new if result.code.to_i == 404
     raise AccessDenied.new if result.code.to_i == 403
 
-    # Hande content expectation errors
+    # Handle content expectation errors
     raise UnexpectedResponse.new if options[:expected_class] && result_content.empty?
     json = JSON.parse(result_content)
     raise APIError.new(json['error_type'], json['error']) if json.is_a?(Hash) && json['error_type']

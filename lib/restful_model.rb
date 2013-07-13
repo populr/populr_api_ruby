@@ -24,17 +24,16 @@ class RestfulModel
   def inflate(json)
     setters = methods.grep(/^\w+=$/)
     setters.each do |setter|
-      property_name = setter.to_s[0..setter.to_s.index('=')-1]
-      self.send(setter, json[property_name]) if json.has_key?(property_name)
+      property_name = setter.to_s.sub('=', '')
+      send(setter, json[property_name]) if json.has_key?(property_name)
     end
-    self.created_at = Time.parse(self.created_at) if self.created_at
   end
 
   def save!
     if _id
-      update('PUT', '', self.as_json(:api_representation => true))
+      update('PUT', '', as_json(:api_representation => true))
     else
-      update('POST', '', self.as_json(:api_representation => true))
+      update('POST', '', as_json(:api_representation => true))
     end
   end
 
@@ -42,10 +41,10 @@ class RestfulModel
     hash = {}
     setters = methods.grep(/^\w+=$/)
     setters.each do |setter|
-      getter = setter.to_s.sub('=')
+      getter = setter.to_s.sub('=', '')
       unless options[:except] && options[:except].include?(getter)
-        value = self.send(getter)
-        unless value.is_a? RestfulModelCollection
+        value = send(getter)
+        unless value.is_a?(RestfulModelCollection)
           value = value.as_json(options) if value.respond_to?(:as_json)
           hash[getter] = value
         end
@@ -56,12 +55,12 @@ class RestfulModel
 
   def update(http_method, action, data = {})
     http_method = http_method.downcase
-    action_url = @_api.url_for_path(self.path(action))
+    action_url = @_api.url_for_path(path(action))
 
-    RestClient.send(http_method, action_url, data){ |response,request,result|
-      json = Populr.interpret_response(result, response, {:expected_class => Object})
+    RestClient.send(http_method, action_url, data) do |response, request, result|
+      json = Populr.interpret_response(result, response, :expected_class => Object)
       inflate(json)
-    }
+    end
     self
   end
 

@@ -1,9 +1,7 @@
 ::ENV['RACK_ENV'] = 'test'
 require File.join(File.dirname(__FILE__), 'spec_helper')
-require 'rack/test'
 
 describe 'Pop' do
-  include Rack::Test::Methods
   before (:each) do
     @api = Populr.new('key')
   end
@@ -11,6 +9,8 @@ describe 'Pop' do
   describe "#initialize" do
     it "should accept an API connection followed by a template" do
       template = Template.new(@api)
+      template.stub(:api_regions).and_return([])
+      template.stub(:api_tags).and_return([])
       template._id = '123'
       pop = Pop.new(template)
       pop.template_id.should == '123'
@@ -48,8 +48,7 @@ describe 'Pop' do
 
       @result = double('result')
       @result.stub(:code).and_return(200)
-      @result.stub(:body).and_return("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}")
-      RestClient.stub(:post).and_yield(nil, nil, @result)
+      RestClient.stub(:post).and_yield("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}", '', @result)
     end
 
     it "should call update with the publish action" do
@@ -62,9 +61,9 @@ describe 'Pop' do
     end
 
     it "should set the published_pop_url" do
-      @pop.published_pop_url.empty?.should == true
+      @pop.published_pop_url.should be_empty
       @pop.publish!
-      @pop.published_pop_url.empty?.should == false
+      @pop.published_pop_url.should_not be_empty
     end
   end
 
@@ -76,8 +75,7 @@ describe 'Pop' do
 
       @result = double('result')
       @result.stub(:code).and_return(200)
-      @result.stub(:body).and_return("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}")
-      RestClient.stub(:post).and_yield(nil, nil, @result)
+      RestClient.stub(:post).and_yield("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}", '', @result)
     end
 
     it "should call update with the unpublish action" do

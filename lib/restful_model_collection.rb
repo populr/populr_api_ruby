@@ -48,7 +48,7 @@ class RestfulModelCollection
 
   def delete(item_or_id)
     item_or_id = item_or_id._id if item_or_id.is_a?(RestfulModel)
-    url = @_api.url_for_path(self.path(item_or_id))
+    url = @_api.url_for_path(path(item_or_id))
     RestClient.delete(url)
   end
 
@@ -86,7 +86,7 @@ class RestfulModelCollection
 
   def get_restful_model(id)
     model = nil
-    url = @_api.url_for_path(self.path(id))
+    url = @_api.url_for_path(path(id))
 
     RestClient.get(url){ |response,request,result|
       json = Populr.interpret_response(result, response, {:expected_class => Object})
@@ -101,7 +101,7 @@ class RestfulModelCollection
   end
 
   def get_restful_model_collection(offset = 0, count = 50)
-    url = @_api.url_for_path("#{self.path}?offset=#{offset}&count=#{count}")
+    url = @_api.url_for_path("#{path}?offset=#{offset}&count=#{count}")
     models = []
     RestClient.get(url){ |response,request,result|
       items = Populr.interpret_response(result, response, {:expected_class => Array})

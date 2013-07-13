@@ -1,15 +1,12 @@
 ::ENV['RACK_ENV'] = 'test'
 require File.join(File.dirname(__FILE__), 'spec_helper')
-require 'rack/test'
 
 describe 'Pop' do
-  include Rack::Test::Methods
   before (:each) do
     @api = Populr.new('key')
     @tracer = Tracer.new(@api)
     @tracer.inflate(JSON.parse("{\"code\":\"tc\",\"name\":\"Twitter\",\"notify_on_open\":false,\"analytics\":{\"views\":6,\"clicks\":24,\"links\":{\"http://www.populr.me/\":{\"clicks\":4}},\"assets\":{\"empty_region\":{},\"unnamed_region_0\":{\"132213ae12bc1312\":{\"clicks\":10}},\"my_image_region\":{\"132213ae21f4812f\":{\"clicks\":10},\"f48121f48121f421\":{\"clicks\":3}}}}}"))
   end
-
 
   describe "#views" do
     it "should retrieve the total views from analytics" do

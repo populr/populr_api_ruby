@@ -1,9 +1,7 @@
 ::ENV['RACK_ENV'] = 'test'
 require File.join(File.dirname(__FILE__), 'spec_helper')
-require 'rack/test'
 
 describe 'RestfulModel' do
-  include Rack::Test::Methods
   before (:each) do
     @api = Populr.new('key')
   end

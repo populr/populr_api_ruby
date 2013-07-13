@@ -46,7 +46,7 @@ class Tracer < RestfulModel
   end
 
   def code=(c)
-    raise CodeCannotBeModified.new if self.code && c != self.code
+    raise CodeCannotBeModified.new if code && c != code
     @code = c
   end
 

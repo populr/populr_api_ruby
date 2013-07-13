@@ -5,7 +5,7 @@ class ImageAsset < Asset
   attr_accessor :link
 
   def self.collection_name
-    "images"
+    'images'
   end
 
 end

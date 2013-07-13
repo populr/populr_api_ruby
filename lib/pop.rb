@@ -84,7 +84,6 @@ class Pop < RestfulModel
     end
   end
 
-
   def publish!
     update('POST', 'publish')
   end
@@ -94,14 +93,14 @@ class Pop < RestfulModel
   end
 
   def edit_url
-    return @_api.api_server.gsub('api.', 'www.') + "/edit/#{self._id}"
+    return @_api.api_server.gsub('api.', 'www.') + "/edit/#{_id}"
   end
 
   def enable_collaboration!(interstitial_text = '', webhook = nil)
     self.collaboration_link_enabled = true
     self.collaboration_webhook = webhook
     self.collaboration_interstitial_text = interstitial_text
-    self.save! # go and populate our model with the collaboration link
+    save! # go and populate our model with the collaboration link
   end
 
   def disable_collaboration
@@ -111,7 +110,7 @@ class Pop < RestfulModel
 
   def enable_cloning!
     self.clone_link_enabled = true
-    self.save! # go and populate our model with the clone link
+    save! # go and populate our model with the clone link
   end
 
   def disable_cloning
@@ -120,12 +119,12 @@ class Pop < RestfulModel
   end
 
   def has_unpopulated_region(region_identifier)
-    self.unpopulated_api_regions.include?(region_identifier)
+    unpopulated_api_regions.include?(region_identifier)
   end
 
   def type_of_unpopulated_region(region_identifier)
-    return false unless self.has_unpopulated_region(region_identifier)
-    self.unpopulated_api_regions[region_identifier]['type']
+    return false unless has_unpopulated_region(region_identifier)
+    unpopulated_api_regions[region_identifier]['type']
   end
 
   def populate_region(region_identifier, assets)
@@ -136,16 +135,16 @@ class Pop < RestfulModel
       raise AssetMustBeSaved.new unless a._id
       a._id
     })
-    self.unpopulated_api_regions.delete(region_identifier)
+    unpopulated_api_regions.delete(region_identifier)
   end
 
   def has_unpopulated_tag(tag_identifier)
-    self.unpopulated_api_tags.include?(tag_identifier)
+    unpopulated_api_tags.include?(tag_identifier)
   end
 
   def populate_tag(tag_identifier, tag_contents)
     @newly_populated_tags[tag_identifier] = tag_contents
-    self.unpopulated_api_tags.delete(tag_identifier)
+    unpopulated_api_tags.delete(tag_identifier)
   end
 
 
