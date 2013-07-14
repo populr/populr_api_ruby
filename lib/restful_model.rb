@@ -58,10 +58,16 @@ class RestfulModel
     action_url = @_api.url_for_path(path(action))
 
     RestClient.send(http_method, action_url, data) do |response, request, result|
-      json = Populr.interpret_response(result, response, :expected_class => Object)
-      inflate(json)
+      unless http_method == 'delete'
+        json = Populr.interpret_response(result, response, :expected_class => Object)
+        inflate(json)
+      end
     end
     self
+  end
+
+  def destroy
+    update('DELETE', '')
   end
 
   def path(action = "")
