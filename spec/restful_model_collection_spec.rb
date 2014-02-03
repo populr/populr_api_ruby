@@ -35,6 +35,51 @@ describe 'RestfulModelCollection' do
       end
     end
 
+    context "on an image asset" do
+      before (:each) do
+        result = double('result')
+        result.stub(:code).and_return(200)
+        RestClient.should_receive(:get).and_yield("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}", nil, result)
+        @collection = @populr.images
+      end
+
+      it "should return an image asset" do
+        pop = @collection.find('5107089add02dcaecc000003')
+        pop.is_a?(ImageAsset).should == true
+        pop._id.should == '5107089add02dcaecc000003'
+      end
+    end
+
+    context "on a document asset" do
+      before (:each) do
+        result = double('result')
+        result.stub(:code).and_return(200)
+        RestClient.should_receive(:get).and_yield("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}", nil, result)
+        @collection = @populr.documents
+      end
+
+      it "should return a document asset" do
+        pop = @collection.find('5107089add02dcaecc000003')
+        pop.is_a?(DocumentAsset).should == true
+        pop._id.should == '5107089add02dcaecc000003'
+      end
+    end
+
+    context "on an embed asset" do
+      before (:each) do
+        result = double('result')
+        result.stub(:code).and_return(200)
+        RestClient.should_receive(:get).and_yield("{\"_id\":\"5107089add02dcaecc000003\",\"created_at\":\"2013-01-28T23:24:10Z\",\"domain\":\"generic\",\"name\":\"Untitled\",\"password\":null,\"slug\":\"\",\"tracers\":[{\"_id\":\"5109b5e0dd02dc5976000001\",\"created_at\":\"2013-01-31T00:08:00Z\",\"name\":\"Facebook\"},{\"_id\":\"5109b5f5dd02dc4c43000002\",\"created_at\":\"2013-01-31T00:08:21Z\",\"name\":\"Twitter\"}],\"published_pop_url\":\"http://group3.lvh.me\",\"unpopulated_api_tags\":[],\"unpopulated_api_regions\":[],\"label_names\":[]}", nil, result)
+        @collection = @populr.embeds
+      end
+
+      it "should return an embed asset" do
+        pop = @collection.find('5107089add02dcaecc000003')
+        pop.is_a?(EmbedAsset).should == true
+        pop._id.should == '5107089add02dcaecc000003'
+      end
+    end
+
     it "should return nil and not throw an exception if you fail to pass an ID" do
       @populr.pops.find(nil).should == nil
     end
